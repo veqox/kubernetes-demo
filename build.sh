@@ -2,7 +2,6 @@
 
 mvn -B package
 cp src/main/docker/Dockerfile target/
-docker login ghcr.io -u $GITHUB_ACTOR -p $GITHUB_TOKEN
 docker buildx create  --name multi-arch-builder --platform linux/amd64,linux/arm64
 docker buildx use multi-arch-builder
 docker buildx build \
