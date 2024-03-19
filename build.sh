@@ -1,11 +1,20 @@
 #!/bin/bash
 
-mvn -B package
-cp src/main/docker/Dockerfile target/
-docker buildx create  --name multi-arch-builder --platform linux/amd64,linux/arm64
-docker buildx use multi-arch-builder
+
+
+# Setup buildx
+docker buildx create \
+  --name multi-arch-builder \
+  --driver docker-container \
+  --use
+
+docker buildx inspect \
+  --bootstrap \
+  --builder multi-arch-builder
+
+# Build the image
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  --tag ghcr.io/$GITHUB_REPOSITORY/backend:latest \
+  --tag ${GITHUB_REPOSITORY}:latest \
   --push \
-  ./target
+  .
